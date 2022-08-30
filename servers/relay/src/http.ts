@@ -87,7 +87,14 @@ export class HttpService {
 
   private registerApi() {
     this.app.register(helmet);
-    this.app.register(ws);
+    this.app.register(ws, {
+      options: {
+        verifyClient: (info) => {
+          console.log('verifyClient info', info.origin, info.req, info.secure, JSON.stringify(info))
+          return true
+        }
+      }
+    });
 
     this.app.get("/", { websocket: true }, connection => {
       connection.on("error", (e: Error) => {
